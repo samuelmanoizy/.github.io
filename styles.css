@@ -7,6 +7,10 @@
     --card-background: #1f1f1f;
 }
 
+html {
+    font-size: 16px;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -15,8 +19,8 @@ body {
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 header {
@@ -41,7 +45,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    padding: 1rem;
 }
 
 .video-container {
@@ -54,6 +58,7 @@ main {
     width: 100%;
     max-width: 400px;
     height: 70vh;
+    max-height: 600px;
 }
 
 .video-container:hover {
@@ -118,6 +123,8 @@ video {
     font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .video-actions button:hover {
@@ -139,6 +146,9 @@ nav button {
     font-size: 1rem;
     cursor: pointer;
     transition: color 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
 }
 
 nav button:hover {
@@ -162,6 +172,8 @@ nav button:hover {
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 #user-info button:hover {
@@ -190,6 +202,7 @@ nav button:hover {
     max-width: 600px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(255,255,255,0.2);
+    position: relative;
 }
 
 .close {
@@ -218,6 +231,8 @@ nav button:hover {
     padding: 8px;
     border-radius: 50%;
     margin-left: 10px;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 #toolbox-btn:hover {
@@ -247,29 +262,13 @@ nav button:hover {
     text-align: left;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .toolbox-menu button:hover {
     background-color: var(--accent-color);
     color: #ffffff;
-}
-
-@media (min-width: 768px) {
-    main {
-        max-width: 768px;
-        margin: 0 auto;
-    }
-
-    .modal-content {
-        padding: 40px;
-    }
-}
-
-header {
-    /* ... existing styles ... */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .header-right {
@@ -280,6 +279,7 @@ header {
 #user-info {
     margin-right: 10px;
 }
+
 .upload-section {
     margin-bottom: 20px;
 }
@@ -314,14 +314,11 @@ header {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    min-height: 44px;
 }
 
 #upload-button:hover {
     background-color: var(--text-color);
-}
-.modal-content {
-    position: relative;
-    /* existing styles */
 }
 
 .camera-icon {
@@ -346,42 +343,54 @@ header {
 
 h2 {
     margin-top: 40px;
-    /* existing styles */
 }
+
 @media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-  }
-  .video-container {
-    width: 100%;
-  }
-  /* Add more mobile-specific styles as needed */
+    html {
+        font-size: 14px;
+    }
 
+    nav {
+        flex-wrap: wrap;
+    }
 
+    nav button {
+        flex: 1 0 20%;
+        padding: 0.75rem;
+    }
+
+    .video-container {
+        height: 60vh;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
 }
 
 @media (max-width: 480px) {
-  /* Styles for very small screens */
-}
+    html {
+        font-size: 12px;
+    }
 
-html {
-  font-size: 16px; /* Base font size */
-}
+    .video-actions {
+        flex-wrap: wrap;
+    }
 
-@media (max-width: 768px) {
-  html {
-    font-size: 14px; /* Slightly smaller base font for mobile */
-  }
-  
-  nav button {
-    padding: 0.75rem; /* Larger touch target */
-    min-width: 44px;
-    min-height: 44px;
-  }
+    .video-actions button {
+        flex: 1 0 40%;
+        margin: 0.25rem;
+    }
+
+    .toolbox-menu {
+        right: 0;
+        left: 0;
+        width: 100%;
+    }
 }
 
 @media (min-width: 1200px) {
-  .video-container {
-    max-width: 600px; /* Larger video for big screens */
-  }
+    .video-container {
+        max-width: 500px;
+    }
 }
