@@ -14,21 +14,20 @@
         <h1>ElegantLoop</h1>
         <div class="header-right">
             <div id="user-info"></div>
-            <button id="toolbox-btn" style="display: none;"><i class="fas fa-ellipsis-h"></i></button>
+            <button id="toolbox-btn" class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
         </div>
     </header>
     <main>
         <div id="video-feed"></div>
     </main>
     <nav>
-        <button id="home"><i class="fas fa-home"></i> Home</button>
-        <button id="discover"><i class="fas fa-compass"></i> Discover</button>
-        <button id="upload"><i class="fas fa-plus-circle"></i> Upload</button>
-        <button id="inbox"><i class="fas fa-envelope"></i> Inbox</button>
-        <button id="profile"><i class="fas fa-user"></i> Profile</button>
+        <button id="home" class="nav-btn"><i class="fas fa-home"></i> <span>Home</span></button>
+        <button id="discover" class="nav-btn"><i class="fas fa-compass"></i> <span>Discover</span></button>
+        <button id="upload" class="nav-btn"><i class="fas fa-plus-circle"></i> <span>Upload</span></button>
+        <button id="inbox" class="nav-btn"><i class="fas fa-envelope"></i> <span>Inbox</span></button>
+        <button id="profile" class="nav-btn"><i class="fas fa-user"></i> <span>Profile</span></button>
     </nav>
 
-    <!-- Updated Upload Modal -->
     <div id="upload-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -42,11 +41,11 @@
                 <div id="video-preview"></div>
                 <div id="video-trim">
                     <div class="trim-input">
-                        <label for="trim-start">Trim Start (seconds):</label>
+                        <label for="trim-start">Trim Start (s):</label>
                         <input type="number" id="trim-start" min="0" value="0">
                     </div>
                     <div class="trim-input">
-                        <label for="trim-end">Trim End (seconds):</label>
+                        <label for="trim-end">Trim End (s):</label>
                         <input type="number" id="trim-end" min="0" value="10">
                     </div>
                 </div>
@@ -56,26 +55,25 @@
                 <input type="file" id="music-file" accept="audio/*">
                 <div id="music-trim">
                     <div class="trim-input">
-                        <label for="music-start">Music Start (seconds):</label>
+                        <label for="music-start">Music Start (s):</label>
                         <input type="number" id="music-start" min="0" value="0">
                     </div>
                     <div class="trim-input">
-                        <label for="music-end">Music End (seconds):</label>
+                        <label for="music-end">Music End (s):</label>
                         <input type="number" id="music-end" min="0" value="10">
                     </div>
                 </div>
             </div>
-            <button id="upload-button">Upload</button>
+            <button id="upload-button" class="btn-primary">Upload</button>
         </div>
     </div>
 
-    <!-- Toolbox Menu -->
     <div id="toolbox-menu" class="toolbox-menu">
-        <button onclick="depositMoney()">Deposit</button>
-        <button onclick="withdraw()">Withdraw</button>
-        <button onclick="showMyVideos()">My Videos</button>
-        <button onclick="showInbox()">Inbox</button>
-        <button onclick="logout()">Logout</button>
+        <button onclick="depositMoney()" class="toolbox-btn">Deposit</button>
+        <button onclick="withdraw()" class="toolbox-btn">Withdraw</button>
+        <button onclick="showMyVideos()" class="toolbox-btn">My Videos</button>
+        <button onclick="showInbox()" class="toolbox-btn">Inbox</button>
+        <button onclick="logout()" class="toolbox-btn">Logout</button>
     </div>
 
     <script src="script.js"></script>
