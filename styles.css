@@ -348,3 +348,40 @@ h2 {
     margin-top: 40px;
     /* existing styles */
 }
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+  }
+  .video-container {
+    width: 100%;
+  }
+  /* Add more mobile-specific styles as needed */
+
+
+}
+
+@media (max-width: 480px) {
+  /* Styles for very small screens */
+}
+
+html {
+  font-size: 16px; /* Base font size */
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px; /* Slightly smaller base font for mobile */
+  }
+  
+  nav button {
+    padding: 0.75rem; /* Larger touch target */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .video-container {
+    max-width: 600px; /* Larger video for big screens */
+  }
+}
