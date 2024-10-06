@@ -146,9 +146,9 @@ nav button {
     font-size: 1rem;
     cursor: pointer;
     transition: color 0.3s ease;
+    padding: 0.5rem;
     min-width: 44px;
     min-height: 44px;
-    padding: 0.5rem;
 }
 
 nav button:hover {
@@ -158,13 +158,14 @@ nav button:hover {
 #user-info {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 #user-info p {
-    margin: 0 1rem 0 0;
+    margin: 0 1rem 0.5rem 0;
 }
 
-#user-info button {
+#user-info button, #user-info input {
     background-color: var(--accent-color);
     color: white;
     border: none;
@@ -172,6 +173,7 @@ nav button:hover {
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-bottom: 0.5rem;
     min-width: 44px;
     min-height: 44px;
 }
@@ -202,7 +204,6 @@ nav button:hover {
     max-width: 600px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(255,255,255,0.2);
-    position: relative;
 }
 
 .close {
@@ -269,15 +270,6 @@ nav button:hover {
 .toolbox-menu button:hover {
     background-color: var(--accent-color);
     color: #ffffff;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-}
-
-#user-info {
-    margin-right: 10px;
 }
 
 .upload-section {
@@ -355,8 +347,8 @@ h2 {
     }
 
     nav button {
-        flex: 1 0 20%;
-        padding: 0.75rem;
+        flex: 1 0 auto;
+        margin: 0.25rem;
     }
 
     .video-container {
@@ -365,6 +357,16 @@ h2 {
 
     .modal-content {
         padding: 20px;
+    }
+
+    #user-info {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #user-info input, #user-info button {
+        width: 100%;
+        margin-bottom: 0.5rem;
     }
 }
 
@@ -383,14 +385,13 @@ h2 {
     }
 
     .toolbox-menu {
-        right: 0;
-        left: 0;
         width: 100%;
+        right: 0;
     }
 }
 
 @media (min-width: 1200px) {
     .video-container {
-        max-width: 500px;
+        max-width: 600px;
     }
 }
