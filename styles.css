@@ -1,0 +1,350 @@
+:root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #0f3460;
+    --text-color: #e94560;
+    --background-color: #0f0f0f;
+    --card-background: #1f1f1f;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(255,255,255,0.1);
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.video-container {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(255,255,255,0.1);
+    transition: transform 0.3s ease;
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 70vh;
+}
+
+.video-container:hover {
+    transform: translateY(-5px);
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-info {
+    padding: 1rem;
+    color: #ffffff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(15, 15, 15, 0.8);
+}
+
+.like-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    background-color: rgba(15,15,15,0.8);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+.like-popup:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem;
+    background-color: rgba(15, 15, 15, 0.8);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.video-actions button {
+    background-color: var(--secondary-color);
+    border: none;
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.video-actions button:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem;
+    background-color: var(--primary-color);
+}
+
+nav button {
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+nav button:hover {
+    color: #ffffff;
+}
+
+#user-info {
+    display: flex;
+    align-items: center;
+}
+
+#user-info p {
+    margin: 0 1rem 0 0;
+}
+
+#user-info button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#user-info button:hover {
+    background-color: var(--text-color);
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid var(--accent-color);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(255,255,255,0.2);
+}
+
+.close {
+    color: var(--text-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Toolbox styles */
+#toolbox-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+#toolbox-btn:hover {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.toolbox-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.toolbox-menu button {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    background-color: transparent;
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.toolbox-menu button:hover {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+@media (min-width: 768px) {
+    main {
+        max-width: 768px;
+        margin: 0 auto;
+    }
+
+    .modal-content {
+        padding: 40px;
+    }
+}
+
+header {
+    /* ... existing styles ... */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+#user-info {
+    margin-right: 10px;
+}
+.upload-section {
+    margin-bottom: 20px;
+}
+
+.trim-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.trim-input label {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.trim-input input {
+    flex: 2;
+    padding: 5px;
+    border: 1px solid var(--accent-color);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+#upload-button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#upload-button:hover {
+    background-color: var(--text-color);
+}
+.modal-content {
+    position: relative;
+    /* existing styles */
+}
+
+.camera-icon {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.camera-icon i {
+    font-size: 30px;
+    color: white;
+}
+
+h2 {
+    margin-top: 40px;
+    /* existing styles */
+}

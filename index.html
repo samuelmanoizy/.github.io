@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElegantLoop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/0.10.1/ffmpeg.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>ElegantLoop</h1>
+        <div class="header-right">
+            <div id="user-info"></div>
+            <button id="toolbox-btn" style="display: none;"><i class="fas fa-ellipsis-h"></i></button>
+        </div>
+    </header>
+    <main>
+        <div id="video-feed"></div>
+    </main>
+    <nav>
+        <button id="home"><i class="fas fa-home"></i> Home</button>
+        <button id="discover"><i class="fas fa-compass"></i> Discover</button>
+        <button id="upload"><i class="fas fa-plus-circle"></i> Upload</button>
+        <button id="inbox"><i class="fas fa-envelope"></i> Inbox</button>
+        <button id="profile"><i class="fas fa-user"></i> Profile</button>
+    </nav>
+
+    <!-- Updated Upload Modal -->
+    <div id="upload-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="camera-btn" class="camera-icon">
+                <i class="fas fa-camera-retro"></i>
+            </div>
+            <h2>Upload Video</h2>
+            <div class="upload-section">
+                <h3>Video</h3>
+                <input type="file" id="video-file" accept="video/*">
+                <div id="video-preview"></div>
+                <div id="video-trim">
+                    <div class="trim-input">
+                        <label for="trim-start">Trim Start (seconds):</label>
+                        <input type="number" id="trim-start" min="0" value="0">
+                    </div>
+                    <div class="trim-input">
+                        <label for="trim-end">Trim End (seconds):</label>
+                        <input type="number" id="trim-end" min="0" value="10">
+                    </div>
+                </div>
+            </div>
+            <div class="upload-section">
+                <h3>Music (Optional)</h3>
+                <input type="file" id="music-file" accept="audio/*">
+                <div id="music-trim">
+                    <div class="trim-input">
+                        <label for="music-start">Music Start (seconds):</label>
+                        <input type="number" id="music-start" min="0" value="0">
+                    </div>
+                    <div class="trim-input">
+                        <label for="music-end">Music End (seconds):</label>
+                        <input type="number" id="music-end" min="0" value="10">
+                    </div>
+                </div>
+            </div>
+            <button id="upload-button">Upload</button>
+        </div>
+    </div>
+
+    <!-- Toolbox Menu -->
+    <div id="toolbox-menu" class="toolbox-menu">
+        <button onclick="depositMoney()">Deposit</button>
+        <button onclick="withdraw()">Withdraw</button>
+        <button onclick="showMyVideos()">My Videos</button>
+        <button onclick="showInbox()">Inbox</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
