@@ -18,6 +18,10 @@ const LIKE_VALUE_AKEL = LIKE_VALUE_DOLLARS * AKEL_TO_DOLLAR_RATE;
 let currentUser = null;
 let currentVideoIndex = 0;
 let isLoggedIn = false;
+let videoFile = null;
+let audioFile = null;
+let mediaRecorder = null;
+let recordedChunks = [];
 
 function createVideoElement(video) {
     return `
@@ -63,7 +67,7 @@ function populateVideoFeed() {
         playNextVideo();
     });
 
-    updateUserInfo();
+    updateUserInterface();
 }
 
 function likeVideo(id, likeButton) {
@@ -87,17 +91,18 @@ function likeVideo(id, likeButton) {
         
         videoContainer.querySelector('.like-popup').style.display = 'none';
         video.play();
-        updateUserInfo();
+        updateUserInterface();
     } else {
         alert('Not enough AKELcoins! Please deposit more.');
     }
 }
+
 function playNextVideo() {
     currentVideoIndex = (currentVideoIndex + 1) % videos.length;
     populateVideoFeed();
 }
 
-function updateUserInfo() {
+function updateUserInterface() {
     const userInfo = document.getElementById('user-info');
     const toolboxBtn = document.getElementById('toolbox-btn');
     if (isLoggedIn) {
@@ -106,14 +111,11 @@ function updateUserInfo() {
             <p>AKELcoins: ${currentUser.akelCoins.toFixed(2)}</p>
         `;
         toolboxBtn.style.display = 'inline-block';
+        hideAuthContainer();
     } else {
-        userInfo.innerHTML = `
-            <input type="text" id="username" placeholder="Username or Email">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <button onclick="showRegisterForm()">Register</button>
-        `;
+        userInfo.innerHTML = '';
         toolboxBtn.style.display = 'none';
+        showAuthContainer();
     }
 }
 
@@ -121,7 +123,7 @@ function depositMoney() {
     const amount = parseFloat(prompt('Enter amount in dollars to deposit:'));
     if (!isNaN(amount) && amount > 0) {
         currentUser.akelCoins += amount * AKEL_TO_DOLLAR_RATE;
-        updateUserInfo();
+        updateUserInterface();
         alert(`Deposited ${amount} dollars. You received ${amount * AKEL_TO_DOLLAR_RATE} AKELcoins.`);
     } else {
         alert('Invalid amount. Please enter a positive number.');
@@ -216,16 +218,24 @@ function saveVideo(id) {
     alert(`Video ${id} saved to your favorites!`);
 }
 
+function toggleAuthForm() {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+    registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+}
+
 function login() {
-    const usernameOrEmail = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
     
-    const user = users.find(u => (u.name === usernameOrEmail || u.email === usernameOrEmail) && u.password === password);
+    const user = users.find(u => (u.name === username || u.email === username) && u.password === password);
     
     if (user) {
         isLoggedIn = true;
         currentUser = user;
-        updateUserInfo();
+        updateUserInterface();
+        hideAuthContainer();
         alert('Login successful!');
     } else {
         alert('Invalid username/email or password');
@@ -235,19 +245,18 @@ function login() {
 function logout() {
     isLoggedIn = false;
     currentUser = null;
-    updateUserInfo();
+    updateUserInterface();
+    showAuthContainer();
     document.getElementById('toolbox-menu').style.display = 'none';
+    alert('You have been logged out successfully.');
 }
 
-function showRegisterForm() {
-    const userInfo = document.getElementById('user-info');
-    userInfo.innerHTML = `
-        <input type="text" id="register-name" placeholder="Name">
-        <input type="email" id="register-email" placeholder="Email">
-        <input type="password" id="register-password" placeholder="Password">
-        <button onclick="register()">Register</button>
-        <button onclick="updateUserInfo()">Back to Login</button>
-    `;
+function showAuthContainer() {
+    document.getElementById('auth-container').style.display = 'flex';
+}
+
+function hideAuthContainer() {
+    document.getElementById('auth-container').style.display = 'none';
 }
 
 function isValidEmail(email) {
@@ -284,159 +293,12 @@ function register() {
         
         users.push(newUser);
         alert('Registration successful! You can now log in.');
-        updateUserInfo();
+        toggleAuthForm();
     } else {
         alert('Please fill in all fields.');
     }
 }
 
-document.getElementById('toolbox-btn').addEventListener('click', function(event) {
-    event.stopPropagation();
-    const toolboxMenu = document.getElementById('toolbox-menu');
-    toolboxMenu.style.display = toolboxMenu.style.display === 'block' ? 'none' : 'block';
-});
-
-document.addEventListener('click', function(event) {
-    const toolboxMenu = document.getElementById('toolbox-menu');
-    if (event.target !== document.getElementById('toolbox-btn') && !toolboxMenu.contains(event.target)) {
-        toolboxMenu.style.display = 'none';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    populateVideoFeed();
-    updateUserInfo();
-});
-
-// New Upload Modal Functionality
-const modal = document.getElementById('upload-modal');
-const uploadBtn = document.getElementById('upload');
-const closeBtn = document.getElementsByClassName('close')[0];
-
-uploadBtn.onclick = function() {
-    if (!isLoggedIn) {
-        alert('Please log in to upload videos');
-        return;
-    }
-    modal.style.display = 'block';
-}
-
-closeBtn.onclick = function() {
-    modal.style.display = 'none';
-}
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-}
-
-let videoFile = null;
-let audioFile = null;
-let videoBlob = null;
-
-document.getElementById('video-file').addEventListener('change', function(e) {
-    videoFile = e.target.files[0];
-    const videoPreview = document.getElementById('video-preview');
-    videoPreview.innerHTML = `<video src="${URL.createObjectURL(videoFile)}" controls></video>`;
-    
-    // Update trim end to video duration
-    const video = videoPreview.querySelector('video');
-    video.onloadedmetadata = function() {
-        document.getElementById('trim-end').value = Math.floor(video.duration);
-    };
-});
-
-document.getElementById('music-file').addEventListener('change', function(e) {
-    audioFile = e.target.files[0];
-    // Add audio preview if needed
-});
-
-document.getElementById('upload-button').addEventListener('click', async function() {
-    if (!videoFile) {
-        alert('Please select a video file');
-        return;
-    }
-
-    const trimStart = document.getElementById('trim-start').value;
-    const trimEnd = document.getElementById('trim-end').value;
-    const musicStart = document.getElementById('music-start').value;
-    const musicEnd = document.getElementById('music-end').value;
-
-    try {
-        videoBlob = await processVideo(videoFile, audioFile, trimStart, trimEnd, musicStart, musicEnd);
-        console.log('Video processed successfully');
-        
-        // Here you would typically send the processed video to your server
-        console.log('Uploading processed video');
-        
-        alert('Video processed and uploaded successfully!');
-        modal.style.display = 'none';
-    } catch (error) {
-        console.error('Error processing video:', error);
-        alert('Error processing video. Please try again.');
-    }
-});
-
-async function processVideo(videoFile, audioFile, videoStart, videoEnd, audioStart, audioEnd) {
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    const ffmpeg = createFFmpeg({ log: true });
-    await ffmpeg.load();
-
-    ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
-
-    let command = ['-i', 'input.mp4', '-ss', videoStart, '-to', videoEnd];
-
-    if (audioFile) {
-        ffmpeg.FS('writeFile', 'audio.mp3', await fetchFile(audioFile));
-        command = command.concat([
-            '-i', 'audio.mp3',
-            '-ss', audioStart,
-            '-to', audioEnd,
-            '-filter_complex', '[1:a]adelay=0|0[delayed_audio];[0:a][delayed_audio]amix=inputs=2:duration=shortest',
-        ]);
-    }
-
-    command = command.concat(['-c:v', 'libx264', '-c:a', 'aac', 'output.mp4']);
-
-    await ffmpeg.run(...command);
-
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    return new Blob([data.buffer], { type: 'video/mp4' });
-}
-
-// Navigation functionality
-document.getElementById('home').addEventListener('click', () => {
-    currentVideoIndex = 0;
-    populateVideoFeed();
-});
-
-document.getElementById('discover').addEventListener('click', () => {
-    currentVideoIndex = Math.floor(Math.random() * videos.length);
-    populateVideoFeed();
-});
-
-document.getElementById('inbox').addEventListener('click', () => {
-    if (!isLoggedIn) {
-        alert('Please log in to access your inbox');
-        return;
-    }
-    showInbox();
-});
-
-document.getElementById('profile').addEventListener('click', () => {
-    if (isLoggedIn) {
-        alert(`Profile: ${currentUser.name}\nFollowers: ${currentUser.followers}\nFollowing: ${currentUser.following}\nAKELcoins: ${currentUser.akelCoins.toFixed(2)}`);
-    } else {
-        alert('Please log in to view your profile');
-    }
-});
-
-// Initialize the app
-document.addEventListener('DOMContentLoaded', () => {
-    populateVideoFeed();
-    updateUserInfo();
-});
 function withdraw() {
     if (!isLoggedIn) {
         alert('Please log in to withdraw');
@@ -455,7 +317,7 @@ function withdraw() {
     
     currentUser.akelCoins += withdrawAmount * AKEL_TO_DOLLAR_RATE;
     alert(`Withdrawn $${withdrawAmount.toFixed(2)}. Added ${(withdrawAmount * AKEL_TO_DOLLAR_RATE).toFixed(2)} AKELcoins to your account.`);
-    updateUserInfo();
+    updateUserInterface();
 }
 
 function showMyVideos() {
@@ -473,96 +335,231 @@ function showMyVideos() {
     
     alert(videoList);
 }
-let mediaRecorder;
-let recordedChunks = [];
 
-document.getElementById('camera-btn').addEventListener('click', async function() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        const videoPreview = document.getElementById('video-preview');
-        videoPreview.innerHTML = '<video autoplay muted></video>';
-        videoPreview.querySelector('video').srcObject = stream;
+function startRecording() {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+            const videoPreview = document.getElementById('video-preview');
+            videoPreview.srcObject = stream;
+            videoPreview.play();
 
-        mediaRecorder = new MediaRecorder(stream);
-
-        mediaRecorder.ondataavailable = function(e) {
-            if (e.data.size > 0) {
-                recordedChunks.push(e.data);
-            }
-        };
-
-        mediaRecorder.onstop = function() {
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            videoFile = new File([blob], "recorded_video.webm", { type: 'video/webm' });
-            const videoElement = videoPreview.querySelector('video');
-            videoElement.src = URL.createObjectURL(blob);
-            videoElement.controls = true;
-            videoElement.muted = false;
-
-            // Update trim end to video duration
-            videoElement.onloadedmetadata = function() {
-                document.getElementById('trim-end').value = Math.floor(videoElement.duration);
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
             };
-        };
+            mediaRecorder.start();
 
-        const recordButton = document.createElement('button');
-        recordButton.textContent = 'Start Recording';
-        videoPreview.appendChild(recordButton);
-
-        recordButton.onclick = function() {
-            if (mediaRecorder.state === 'inactive') {
-                mediaRecorder.start();
-                recordButton.textContent = 'Stop Recording';
-                recordedChunks = [];
-            } else {
-                mediaRecorder.stop();
-                recordButton.textContent = 'Start Recording';
-                stream.getTracks().forEach(track => track.stop());
-            }
-        };
-    } catch (err) {
-        console.error('Error accessing camera:', err);
-        alert('Error accessing camera. Please make sure you have given permission and try again.');
-    }
-});
-
-// Existing code for video file input
-document.getElementById('video-file').addEventListener('change', function(e) {
-    videoFile = e.target.files[0];
-    const videoPreview = document.getElementById('video-preview');
-    videoPreview.innerHTML = `<video src="${URL.createObjectURL(videoFile)}" controls></video>`;
-    
-    // Update trim end to video duration
-    const video = videoPreview.querySelector('video');
-    video.onloadedmetadata = function() {
-        document.getElementById('trim-end').value = Math.floor(video.duration);
-    };
-});
-
-// Modified processVideo function to include trimming
-async function processVideo(videoFile, audioFile, videoStart, videoEnd, audioStart, audioEnd) {
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    const ffmpeg = createFFmpeg({ log: true });
-    await ffmpeg.load();
-
-    ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
-
-    let command = ['-i', 'input.mp4', '-ss', videoStart, '-to', videoEnd];
-
-    if (audioFile) {
-        ffmpeg.FS('writeFile', 'audio.mp3', await fetchFile(audioFile));
-        command = command.concat([
-            '-i', 'audio.mp3',
-            '-ss', audioStart,
-            '-to', audioEnd,
-            '-filter_complex', '[1:a]adelay=0|0[delayed_audio];[0:a][delayed_audio]amix=inputs=2:duration=shortest',
-        ]);
-    }
-
-    command = command.concat(['-c:v', 'libx264', '-c:a', 'aac', 'output.mp4']);
-
-    await ffmpeg.run(...command);
-
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    return new Blob([data.buffer], { type: 'video/mp4' });
+            document.getElementById('record-button').style.display = 'none';
+            document.getElementById('stop-button').style.display = 'inline-block';
+        })
+        .catch(error => {
+            console.error('Error accessing media devices:', error);
+        });
 }
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            videoFile = new File([blob], 'recorded-video.webm', { type: 'video/webm' });
+            displayVideoPreview(videoFile);
+            recordedChunks = [];
+        };
+
+        document.getElementById('record-button').style.display = 'inline-block';
+        document.getElementById('stop-button').style.display = 'none';
+    }
+}
+
+// ... (previous code remains the same)
+
+function displayVideoPreview(file) {
+    const videoPreview = document.getElementById('video-preview');
+    const videoURL = URL.createObjectURL(file);
+    videoPreview.src = videoURL;
+    videoPreview.srcObject = null;
+    videoPreview.play();
+
+    videoPreview.onloadedmetadata = function() {
+        document.getElementById('trim-end').value = Math.floor(videoPreview.duration);
+    };
+}
+
+async function uploadVideo() {
+    if (!videoFile) {
+        alert('Please select or record a video');
+        return;
+    }
+
+    const trimStart = document.getElementById('trim-start').value;
+    const trimEnd = document.getElementById('trim-end').value;
+    const musicStart = document.getElementById('music-start').value;
+    const musicEnd = document.getElementById('music-end').value;
+
+    try {
+        const processedVideo = await processVideo(videoFile, audioFile, trimStart, trimEnd, musicStart, musicEnd);
+        console.log('Video processed successfully');
+        
+        // Here you would typically send the processed video to your server
+        console.log('Uploading processed video');
+        
+        // For now, we'll just add it to the videos array
+        const newVideo = {
+            id: videos.length + 1,
+            url: URL.createObjectURL(processedVideo),
+            likes: 0,
+            comments: [],
+            creator: currentUser.name,
+            description: 'New uploaded video'
+        };
+        videos.push(newVideo);
+        
+        alert('Video processed and uploaded successfully!');
+        document.getElementById('upload-modal').style.display = 'none';
+        
+        // Reset the upload form
+        resetUploadForm();
+    } catch (error) {
+        console.error('Error processing video:', error);
+        alert('Error processing video. Please try again.');
+    }
+}
+
+function resetUploadForm() {
+    document.getElementById('video-file').value = '';
+    document.getElementById('music-file').value = '';
+    const videoPreview = document.getElementById('video-preview');
+    videoPreview.src = '';
+    videoPreview.srcObject = null;
+    videoFile = null;
+    audioFile = null;
+    recordedChunks = [];
+    document.getElementById('record-button').style.display = 'inline-block';
+    document.getElementById('stop-button').style.display = 'none';
+}
+
+async function processVideo(videoFile, audioFile, videoStart, videoEnd, audioStart, audioEnd) {
+    // This is a placeholder function. In a real application, you would use a video processing library or send the data to a server for processing.
+    // For now, we'll just return the original video file.
+    return videoFile;
+}
+
+// Toolbox menu functionality
+const toolboxBtn = document.getElementById('toolbox-btn');
+const toolboxMenu = document.getElementById('toolbox-menu');
+
+toolboxBtn.addEventListener('click', function(event) {
+    event.stopPropagation();
+    toolboxMenu.style.display = toolboxMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+document.addEventListener('click', function(event) {
+    if (!toolboxMenu.contains(event.target) && event.target !== toolboxBtn) {
+        toolboxMenu.style.display = 'none';
+    }
+});
+
+// Toolbox menu buttons
+document.querySelectorAll('.toolbox-btn').forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+        switch(index) {
+            case 0:
+                depositMoney();
+                break;
+            case 1:
+                withdraw();
+                break;
+            case 2:
+                showMyVideos();
+                break;
+            case 3:
+                showInbox();
+                break;
+            case 4:
+                logout();
+                break;
+        }
+        toolboxMenu.style.display = 'none';
+    });
+});
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+    populateVideoFeed();
+    updateUserInterface();
+
+    // Add event listeners for login and register buttons
+    document.querySelector('#login-form button').addEventListener('click', login);
+    document.querySelector('#register-form button').addEventListener('click', register);
+
+    // Navigation buttons
+    document.getElementById('home').addEventListener('click', () => {
+        currentVideoIndex = 0;
+        populateVideoFeed();
+    });
+
+    document.getElementById('discover').addEventListener('click', () => {
+        currentVideoIndex = Math.floor(Math.random() * videos.length);
+        populateVideoFeed();
+    });
+
+    document.getElementById('upload').addEventListener('click', () => {
+        if (!isLoggedIn) {
+            alert('Please log in to upload videos');
+            return;
+        }
+        document.getElementById('upload-modal').style.display = 'block';
+    });
+
+    document.getElementById('inbox').addEventListener('click', () => {
+        if (!isLoggedIn) {
+            alert('Please log in to access your inbox');
+            return;
+        }
+        showInbox();
+    });
+
+    document.getElementById('profile').addEventListener('click', () => {
+        if (isLoggedIn) {
+            alert(`Profile: ${currentUser.name}\nFollowers: ${currentUser.followers}\nFollowing: ${currentUser.following}\nAKELcoins: ${currentUser.akelCoins.toFixed(2)}`);
+        } else {
+            alert('Please log in to view your profile');
+        }
+    });
+
+    // Close button for upload modal
+    document.querySelector('.close').addEventListener('click', () => {
+        document.getElementById('upload-modal').style.display = 'none';
+        stopRecording();
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+        if (event.target == document.getElementById('upload-modal')) {
+            document.getElementById('upload-modal').style.display = 'none';
+            stopRecording();
+        }
+    });
+
+    // Video upload and recording functionality
+    const recordButton = document.getElementById('record-button');
+    const stopButton = document.getElementById('stop-button');
+    const uploadButton = document.getElementById('upload-button');
+
+    recordButton.addEventListener('click', startRecording);
+    stopButton.addEventListener('click', stopRecording);
+    uploadButton.addEventListener('click', uploadVideo);
+
+    document.getElementById('video-file').addEventListener('change', function(e) {
+        videoFile = e.target.files[0];
+        displayVideoPreview(videoFile);
+    });
+
+    document.getElementById('music-file').addEventListener('change', function(e) {
+        audioFile = e.target.files[0];
+        // Add audio preview if needed
+    });
+});

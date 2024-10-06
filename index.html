@@ -17,9 +17,28 @@
             <button id="toolbox-btn" class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
         </div>
     </header>
+
     <main>
         <div id="video-feed"></div>
+        <div id="auth-container">
+            <div id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <input type="text" id="login-username" placeholder="Username or Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <button id="login-btn">Login</button>
+                <p>Don't have an account? <a href="#" onclick="toggleAuthForm()">Register</a></p>
+            </div>
+            <div id="register-form" class="auth-form" style="display:none;">
+                <h2>Register</h2>
+                <input type="text" id="register-name" placeholder="Name">
+                <input type="email" id="register-email" placeholder="Email">
+                <input type="password" id="register-password" placeholder="Password">
+                <button id="register-btn">Register</button>
+                <p>Already have an account? <a href="#" onclick="toggleAuthForm()">Login</a></p>
+            </div>
+        </div>
     </main>
+
     <nav>
         <button id="home" class="nav-btn"><i class="fas fa-home"></i> <span>Home</span></button>
         <button id="discover" class="nav-btn"><i class="fas fa-compass"></i> <span>Discover</span></button>
@@ -28,52 +47,37 @@
         <button id="profile" class="nav-btn"><i class="fas fa-user"></i> <span>Profile</span></button>
     </nav>
 
+    <div id="toolbox-menu" class="toolbox-menu">
+        <button class="toolbox-btn"><i class="fas fa-coins"></i> Deposit</button>
+        <button class="toolbox-btn"><i class="fas fa-wallet"></i> Withdraw</button>
+        <button class="toolbox-btn"><i class="fas fa-video"></i> My Videos</button>
+        <button class="toolbox-btn"><i class="fas fa-envelope"></i> Inbox</button>
+        <button class="toolbox-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
     <div id="upload-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <div id="camera-btn" class="camera-icon">
-                <i class="fas fa-camera-retro"></i>
+            <h2>Upload or Record Video</h2>
+            <div id="video-preview-container">
+                <video id="video-preview" controls></video>
             </div>
-            <h2>Upload Video</h2>
-            <div class="upload-section">
-                <h3>Video</h3>
+            <div class="upload-controls">
                 <input type="file" id="video-file" accept="video/*">
-                <div id="video-preview"></div>
-                <div id="video-trim">
-                    <div class="trim-input">
-                        <label for="trim-start">Trim Start (s):</label>
-                        <input type="number" id="trim-start" min="0" value="0">
-                    </div>
-                    <div class="trim-input">
-                        <label for="trim-end">Trim End (s):</label>
-                        <input type="number" id="trim-end" min="0" value="10">
-                    </div>
-                </div>
+                <button id="record-button">Start Recording</button>
+                <button id="stop-button" style="display: none;">Stop Recording</button>
             </div>
-            <div class="upload-section">
-                <h3>Music (Optional)</h3>
+            <div class="edit-controls">
+                <input type="number" id="trim-start" placeholder="Trim Start (s)">
+                <input type="number" id="trim-end" placeholder="Trim End (s)">
+            </div>
+            <div class="music-controls">
                 <input type="file" id="music-file" accept="audio/*">
-                <div id="music-trim">
-                    <div class="trim-input">
-                        <label for="music-start">Music Start (s):</label>
-                        <input type="number" id="music-start" min="0" value="0">
-                    </div>
-                    <div class="trim-input">
-                        <label for="music-end">Music End (s):</label>
-                        <input type="number" id="music-end" min="0" value="10">
-                    </div>
-                </div>
+                <input type="number" id="music-start" placeholder="Music Start (s)">
+                <input type="number" id="music-end" placeholder="Music End (s)">
             </div>
-            <button id="upload-button" class="btn-primary">Upload</button>
+            <button id="upload-button">Upload</button>
         </div>
-    </div>
-
-    <div id="toolbox-menu" class="toolbox-menu">
-        <button onclick="depositMoney()" class="toolbox-btn">Deposit</button>
-        <button onclick="withdraw()" class="toolbox-btn">Withdraw</button>
-        <button onclick="showMyVideos()" class="toolbox-btn">My Videos</button>
-        <button onclick="showInbox()" class="toolbox-btn">Inbox</button>
-        <button onclick="logout()" class="toolbox-btn">Logout</button>
     </div>
 
     <script src="script.js"></script>
