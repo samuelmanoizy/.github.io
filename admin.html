@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElegantLoop Admin</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div id="login-container">
+        <h2>ElegantLoop Admin Login</h2>
+        <input type="text" id="admin-username" placeholder="Username">
+        <input type="password" id="admin-password" placeholder="Password">
+        <button id="admin-login-btn">Login</button>
+    </div>
+
+    <div id="admin-panel" style="display:none;">
+        <header>
+            <h1>ElegantLoop Admin Panel</h1>
+            <button id="logout-btn">Logout</button>
+        </header>
+
+        <nav>
+            <button id="dashboard-btn" class="nav-btn active">Dashboard</button>
+            <button id="users-btn" class="nav-btn">Users</button>
+            <button id="videos-btn" class="nav-btn">Videos</button>
+            <button id="withdrawals-btn" class="nav-btn">Withdrawals</button>
+            <button id="settings-btn" class="nav-btn">Settings</button>
+        </nav>
+
+        <main>
+            <section id="dashboard" class="content-section">
+                <h2>Dashboard</h2>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <p id="total-users">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Videos</h3>
+                        <p id="total-videos">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Withdrawals</h3>
+                        <p id="total-withdrawals">$0.00</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Admin Earnings</h3>
+                        <p id="admin-earnings">$0.00</p>
+                    </div>
+                </div>
+                <button id="admin-withdraw-btn" class="btn-primary">Withdraw Admin Earnings</button>
+            </section>
+
+            <section id="users" class="content-section" style="display:none;">
+                <h2>Users</h2>
+                <table id="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>AKELcoins</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <section id="videos" class="content-section" style="display:none;">
+                <h2>Videos</h2>
+                <table id="videos-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Creator</th>
+                            <th>Likes</th>
+                            <th>Comments</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <section id="withdrawals" class="content-section" style="display:none;">
+                <h2>Withdrawals</h2>
+                <table id="withdrawals-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <section id="settings" class="content-section" style="display:none;">
+                <h2>Admin Settings</h2>
+                <div class="settings-container">
+                    <p>Current Username: <span id="current-username"></span></p>
+                    <input type="text" id="new-username" placeholder="New Username">
+                    <input type="password" id="new-password" placeholder="New Password">
+                    <input type="password" id="confirm-password" placeholder="Confirm New Password">
+                    <button onclick="changeAdminCredentials()">Update Credentials</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeVideoModal()">&times;</span>
+            <h2 id="video-title"></h2>
+            <video id="video-player" controls width="100%"></video>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

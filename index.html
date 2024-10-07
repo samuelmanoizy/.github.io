@@ -7,18 +7,36 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/0.10.1/ffmpeg.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>ElegantLoop</h1>
-        <div class="header-right">
-            <div id="user-info"></div>
-            <button id="toolbox-btn" class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
-        </div>
-    </header>
+   <header>
+    <h1>ElegantLoop</h1>
+    <div class="header-right">
+        <div id="user-info"></div>
+        <button id="toolbox-btn" class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
+    </div>
+</header>
 
     <main>
         <div id="video-feed"></div>
+        <div id="auth-container">
+            <div id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <input type="text" id="login-username" placeholder="Username or Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <button id="login-btn">Login</button>
+                <p>Don't have an account? <a href="#" onclick="toggleAuthForm()">Register</a></p>
+            </div>
+            <div id="register-form" class="auth-form" style="display:none;">
+                <h2>Register</h2>
+                <input type="text" id="register-name" placeholder="Name">
+                <input type="email" id="register-email" placeholder="Email">
+                <input type="password" id="register-password" placeholder="Password">
+                <button id="register-btn">Register</button>
+                <p>Already have an account? <a href="#" onclick="toggleAuthForm()">Login</a></p>
+            </div>
+        </div>
     </main>
 
     <nav>
@@ -28,24 +46,6 @@
         <button id="inbox" class="nav-btn"><i class="fas fa-envelope"></i> <span>Inbox</span></button>
         <button id="profile" class="nav-btn"><i class="fas fa-user"></i> <span>Profile</span></button>
     </nav>
-
-    <div id="auth-container">
-        <div id="login-form" class="auth-form">
-            <h2>Login</h2>
-            <input type="text" id="login-username" placeholder="Username or Email">
-            <input type="password" id="login-password" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <p>Don't have an account? <a href="#" onclick="toggleAuthForm()">Register</a></p>
-        </div>
-        <div id="register-form" class="auth-form" style="display:none;">
-            <h2>Register</h2>
-            <input type="text" id="register-name" placeholder="Name">
-            <input type="email" id="register-email" placeholder="Email">
-            <input type="password" id="register-password" placeholder="Password">
-            <button onclick="register()">Register</button>
-            <p>Already have an account? <a href="#" onclick="toggleAuthForm()">Login</a></p>
-        </div>
-    </div>
 
     <div id="toolbox-menu" class="toolbox-menu">
         <button class="toolbox-btn"><i class="fas fa-coins"></i> Deposit</button>
