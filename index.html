@@ -3,83 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElegantLoop</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/0.10.1/ffmpeg.min.js"></script>
+    <title>Loop</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <style>
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 120px);
+            overflow: hidden;
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+        .like-emoji {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            display: none;
+        }
+        @keyframes likeAnimation {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        .like-emoji.show {
+            display: block;
+            animation: likeAnimation 0.5s ease-out;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+        }
+        .toolbox-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        .toolbox-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: white;
+        }
+        .toolbox-menu button:hover {
+            background-color: #333;
+        }
+    </style>
 </head>
-<body>
-   <header>
-    <h1>ElegantLoop</h1>
-    <div class="header-right">
-        <div id="user-info"></div>
-        <button id="toolbox-btn" class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
-    </div>
-</header>
-
-    <main>
-        <div id="video-feed"></div>
-        <div id="auth-container">
-            <div id="login-form" class="auth-form">
-                <h2>Login</h2>
-                <input type="text" id="login-username" placeholder="Username or Email">
-                <input type="password" id="login-password" placeholder="Password">
-                <button id="login-btn">Login</button>
-                <p>Don't have an account? <a href="#" onclick="toggleAuthForm()">Register</a></p>
-            </div>
-            <div id="register-form" class="auth-form" style="display:none;">
-                <h2>Register</h2>
-                <input type="text" id="register-name" placeholder="Name">
-                <input type="email" id="register-email" placeholder="Email">
-                <input type="password" id="register-password" placeholder="Password">
-                <button id="register-btn">Register</button>
-                <p>Already have an account? <a href="#" onclick="toggleAuthForm()">Login</a></p>
-            </div>
-        </div>
-    </main>
-
-    <nav>
-        <button id="home" class="nav-btn"><i class="fas fa-home"></i> <span>Home</span></button>
-        <button id="discover" class="nav-btn"><i class="fas fa-compass"></i> <span>Discover</span></button>
-        <button id="upload" class="nav-btn"><i class="fas fa-plus-circle"></i> <span>Upload</span></button>
-        <button id="inbox" class="nav-btn"><i class="fas fa-envelope"></i> <span>Inbox</span></button>
-        <button id="profile" class="nav-btn"><i class="fas fa-user"></i> <span>Profile</span></button>
-    </nav>
-
-    <div id="toolbox-menu" class="toolbox-menu">
-        <button class="toolbox-btn"><i class="fas fa-coins"></i> Deposit</button>
-        <button class="toolbox-btn"><i class="fas fa-wallet"></i> Withdraw</button>
-        <button class="toolbox-btn"><i class="fas fa-video"></i> My Videos</button>
-        <button class="toolbox-btn"><i class="fas fa-envelope"></i> Inbox</button>
-        <button class="toolbox-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-    </div>
-
-    <div id="upload-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Upload or Record Video</h2>
-            <div id="video-preview-container">
-                <video id="video-preview" controls></video>
-            </div>
-            <div class="upload-controls">
-                <input type="file" id="video-file" accept="video/*">
-                <button id="record-button">Start Recording</button>
-                <button id="stop-button" style="display: none;">Stop Recording</button>
-            </div>
-            <div class="edit-controls">
-                <input type="number" id="trim-start" placeholder="Trim Start (s)">
-                <input type="number" id="trim-end" placeholder="Trim End (s)">
-            </div>
-            <div class="music-controls">
-                <input type="file" id="music-file" accept="audio/*">
-                <input type="number" id="music-start" placeholder="Music Start (s)">
-                <input type="number" id="music-end" placeholder="Music End (s)">
-            </div>
-            <button id="upload-button">Upload</button>
+<body class="bg-black text-white">
+    <div id="login-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-md w-96">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">Welcome to Loop</h2>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Sign in
+                </button>
+            </form>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="app-content" class="hidden">
+        <div class="flex flex-col h-screen">
+            <header class="flex justify-between items-center p-4 bg-transparent absolute top-0 left-0 right-0 z-10">
+                <h1 class="text-2xl font-semibold">Loop</h1>
+                <button id="toolbox-btn" class="p-2 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
+                    <i data-lucide="more-vertical"></i>
+                </button>
+            </header>
+            <main class="flex-1 overflow-hidden relative">
+                <div class="video-container">
+                    <video id="main-video" class="w-full h-full object-cover" loop muted playsinline></video>
+                    <div class="video-overlay"></div>
+                </div>
+                <div class="like-emoji">❤️</div>
+                <div class="absolute bottom-20 left-4 right-12 z-10">
+                    <h2 id="video-author" class="text-2xl font-semibold mb-2"></h2>
+                    <p id="video-caption" class="text-lg"></p>
+                </div>
+                <div class="absolute right-4 bottom-32 flex flex-col items-center space-y-6">
+                    <button id="like-btn" class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
+                        <i data-lucide="heart"></i>
+                    </button>
+                    <span id="likes-count" class="text-sm"></span>
+                    <button class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
+                        <i data-lucide="message-circle"></i>
+                    </button>
+                    <span id="comments-count" class="text-sm"></span>
+                    <button class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
+                        <i data-lucide="share-2"></i>
+                    </button>
+                    <button class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
+                        <i data-lucide="bookmark"></i>
+                    </button>
+                </div>
+            </main>
+            <nav class="fixed bottom-0 left-0 right-0 bg-gray-900 p-4 flex justify-around items-center">
+                <button id="home-btn" class="text-white focus:outline-none">
+                    <i data-lucide="home"></i>
+                    <span class="block text-xs mt-1">Home</span>
+                </button>
+                <button id="upload-btn" class="text-white focus:outline-none">
+                    <i data-lucide="upload"></i>
+                    <span class="block text-xs mt-1">Upload</span>
+                </button>
+                <button id="inbox-btn" class="text-white focus:outline-none">
+                    <i data-lucide="inbox"></i>
+                    <span class="block text-xs mt-1">Inbox</span>
+                </button>
+            </nav>
+        </div>
+
+        <div id="toolbox-menu" class="toolbox-menu">
+            <button id="withdraw-btn"><i data-lucide="dollar-sign"></i> Withdraw</button>
+            <button id="deposit-btn"><i data-lucide="credit-card"></i> Deposit</button>
+            <button id="my-videos-btn"><i data-lucide="film"></i> My Videos</button>
+            <button id="logout-btn"><i data-lucide="log-out"></i> Log Out</button>
+        </div>
+
+        <div id="upload-modal" class="modal">
+            <div class="modal-content">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Upload Video</h2>
+                <input type="file" id="video-upload" accept="video/*" class="mb-4">
+                <button id="upload-submit" class="bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
+            </div>
+        </div>
+
+        <div id="inbox-modal" class="modal">
+            <div class="modal-content">
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Inbox</h2>
+                <div id="inbox-messages" class="text-gray-800"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videos = [
+            {
+                id: 1,
+                url: 'https://assets.mixkit.co/videos/preview/mixkit-spinning-around-the-earth-29351-large.mp4',
+                caption: 'Exploring the beauty of our planet',
+                author: 'SpaceExplorer',
+                likes: 1234,
+                comments: 89,
+            },
+            {
+                id: 2,
+                url: 'https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4',
+                caption: 'Nature's vibrant colors',
+                author: 'NatureLover',
+                likes: 2345,
+                comments: 156,
+            },
+            {
+                id: 3,
+                url: 'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4',
+                caption: 'Soothing waves and tranquil waters',
+                author: 'OceanDreamer',
+                likes: 3456,
+                comments: 201,
+            },
+        ];
+
+        let currentVideoIndex = 0;
+        let isLiked = false;
+        let videoTimer;
+        let userBalance = 1000; // Initial balance in cents
+
+        const mainVideo = document.getElementById('main-video');
+        const likeEmoji = document.querySelector('.like-emoji');
+        const likeBtn = document.getElementById('like-btn');
+        const toolboxMenu = document.getElementById('toolbox-menu');
+        const uploadModal = document.getElementById('upload-modal');
+        const inboxModal = document.getElementById('inbox-modal');
+
+        function loadVideo(index) {
+            const video = videos[index];
+            mainVideo.src = video.url;
+            document.getElementById('video-author').textContent = video.author;
+            document.getElementById('video-caption').textContent = video.caption;
+            document.getElementById('likes-count').textContent = video.likes;
+            document.getElementById('comments-count').textContent = video.comments;
+            isLiked = false;
+            likeBtn.querySelector('i').setAttribute('fill', 'none');
+            mainVideo.currentTime = 0;
+            mainVideo.play();
+            startVideoTimer();
+        }
+
+        function startVideoTimer() {
+            clearTimeout(videoTimer);
+            videoTimer = setTimeout(() => {
+                mainVideo.pause();
+                showLikeEmoji();
+            }, 5000);
+        }
+
+        function showLikeEmoji() {
+            likeEmoji.classList.add('show');
+            setTimeout(() => {
+                likeEmoji.classList.remove('show');
+                if (!isLiked) {
+                    loadVideo((currentVideoIndex + 1) % videos.length);
+                }
+            }, 5000);
+        }
+
+        function handleLike() {
+            isLiked = true;
+            likeBtn.querySelector('i').setAttribute('fill', 'currentColor');
+            likeEmoji.classList.remove('show');
+            mainVideo.play();
+            clearTimeout(videoTimer);
+            // Increment likes
+            const likesCount = document.getElementById('likes-count');
+            likesCount.textContent = parseInt(likesCount.textContent) + 1;
+        }
+
+        function toggleToolbox() {
+            toolboxMenu.style.display = toolboxMenu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function showUploadModal() {
+            uploadModal.style.display = 'block';
+        }
+
+        function showInboxModal() {
+            inboxModal.style.display = 'block';
+            // Simulated inbox messages
+            document.getElementById('inbox-messages').innerHTML = `
+                <p class="mb-2">Message 1: New comment on your video</p>
+                <p class="mb-2">Message 2: You have a new follower</p>
+                <p>Message 3: Your video is trending!</p>
+            `;
+        }
+
+        function withdraw() {
+            const amount = prompt("Enter amount to withdraw (in cents):");
+            if (amount && !isNaN(amount)) {
+                if (userBalance >= parseInt(amount)) {
+                    userBalance -= parseInt(amount);
+                    alert(`Withdrawn ${amount} cents. New balance: ${userBalance} cents`);
+                } else {
+                    alert("Insufficient funds");
+                }
+            }
+        }
+
+        function deposit() {
+            const amount = prompt("Enter amount to deposit (in cents):");
+            if (amount && !isNaN(amount)) {
+                userBalance += parseInt(amount);
+                alert(`Deposited ${amount} cents. New balance: ${userBalance} cents`);
+            }
+        }
+
+        function showMyVideos() {
+            alert("My Videos feature coming soon!");
+        }
+
+        function logout() {
+            document.getElementById('app-content').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        // Event Listeners
+        likeBtn.addEventListener('click', handleLike);
+        document.getElementById('toolbox-btn').addEventListener('click', toggleToolbox);
+        document.getElementById('upload-btn').addEventListener('click', showUploadModal);
+        document.getElementById('inbox-btn').addEventListener('click', showInboxModal);
+        document.getElementById('withdraw-btn').addEventListener('click', withdraw);
+        document.getElementById('deposit-btn').addEventListener('click', deposit);
+        document.getElementById('my-videos-btn').addEventListener('click', showMyVideos);
+        document.getElementById('logout-btn').addEventListener('click', logout);
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username && password)  {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-content').classList.remove('hidden');
+                loadVideo(currentVideoIndex);
+            } else {
+                alert('Please enter both username and password');
+            }
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        mainVideo.addEventListener('ended', () => {
+            if (isLiked) {
+                mainVideo.currentTime = 0;
+                mainVideo.play();
+            } else {
+                loadVideo((currentVideoIndex + 1) % videos.length);
+            }
+        });
+
+        // Initialize
+        lucide.createIcons();
+    </script>
 </body>
 </html>
