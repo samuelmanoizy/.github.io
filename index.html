@@ -3,349 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loop</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <title>AKEL Video Sharing Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .video-container {
-            position: relative;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Full height */
+            overflow: hidden; /* Hide scrollbar */
+            background-color: #000; /* Black background */
+            color: white; /* White text for contrast */
+            display: flex;
+            flex-direction: column;
+        }
+        header {
             width: 100%;
-            height: calc(100vh - 120px);
-            overflow: hidden;
-        }
-        .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.7) 100%);
-            pointer-events: none;
-        }
-        .like-emoji {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 8rem;
-            display: none;
-        }
-        @keyframes likeAnimation {
-            0% { transform: translate(-50%, -50%) scale(0); }
-            70% { transform: translate(-50%, -50%) scale(1.2); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-        .like-emoji.show {
-            display: block;
-            animation: likeAnimation 0.5s ease-out;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 400px;
-        }
-        .toolbox-menu {
-            display: none;
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background-color: #1f1f1f;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-        }
-        .toolbox-menu button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            text-align: left;
-            background: none;
-            border: none;
+            background-color: #111; /* Darker header */
             color: white;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
         }
-        .toolbox-menu button:hover {
-            background-color: #333;
+        .coin-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ffcc00; /* Yellow color for AKEL Coins */
+            font-size: 18px;
         }
+        .video-container {
+            width: 90%;
+            max-width: 800px; /* Maximum width for larger screens */
+            margin: auto; /* Center align */
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+            flex-grow: 1; /* Allow it to grow */
+        }
+        video {
+            width: 100%; /* Full width */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .controls {
+            display: flex;
+            justify-content: center; /* Center the Like button */
+            position: absolute; /* Position it absolutely within the video container */
+            bottom: 10px; /* Distance from the bottom */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for centering */
+        }
+        .controls button {
+            background-color: transparent; /* Make button transparent */
+            color: white; 
+            border: 2px solid #ff0055; /* Add border color */
+            padding: 10px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Animation effects */
+        }
+        .controls button:hover {
+           background-color: rgba(255, 0, 85, 0.5); /* Change background on hover */
+           transform: scale(1.1); /* Scale up on hover */
+       }
+       .coin-text {
+           color: yellow; /* Set AKEL Coins text to yellow */
+           font-size: 16px; /* Adjust font size as needed */
+           position: absolute; 
+           bottom: 50px; /* Position above the Like button */
+           left: 50%; 
+           transform: translateX(-50%); 
+       }
+       footer {
+           display: flex; /* Flexbox for footer buttons */
+           justify-content: center; /* Center buttons in footer */
+           padding-top: 10px; /* Space above buttons */
+           background-color: #111; /* Dark footer */
+       }
+       footer button {
+           background-color: #ff0055; /* Button color */
+           color: white; 
+           border: none; 
+           padding: 10px; 
+           margin-left: 10px; /* Space between buttons */
+           border-radius: 5px; 
+           
+           /* Set fixed width for equal size buttons */
+           width: 100px; /* Adjust the width as needed */
+           text-align:center; /* Center text in button */
+       }
+       footer button:hover {
+           background-color: #d4004a; /* Button hover color */
+       }
+
+       .video-grid {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 15px; /* Space between video items */
+       }
+       .video-item {
+           background-color: #222; /* Dark background for video items */
+           padding: 10px;
+           border-radius: 8px;
+       }
+
+       .modal {
+           position:absolute;
+           top :0;
+           left :0;
+           right :0;
+           bottom :0;
+           background : rgba(0,0,0,.7);
+           display:flex;
+           justify-content:center;
+           align-items:center;
+
+       }
+
+       .modal-content{
+          background : #333;
+          padding :20px ;
+          border-radius :8px ;
+          box-shadow :0 -4px -4px rgba(255,255,255,.2);
+          z-index :1;
+
+      }
     </style>
 </head>
-<body class="bg-black text-white">
-    <div id="login-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-md w-96">
-            <h2 class="text-3xl font-bold mb-6 text-gray-800">Welcome to Loop</h2>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                </div>
-                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Sign in
-                </button>
-            </form>
-        </div>
+<body>
+
+<header>
+    <h1><i class="fas fa-sync-alt"></i> Loop</h1>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i> <!-- Coin icon -->
+        <span id="akelCoins">100</span> <!-- Coin amount -->
     </div>
+</header>
 
-    <div id="app-content" class="hidden">
-        <div class="flex flex-col h-screen">
-            <header class="flex justify-between items-center p-4 bg-transparent absolute top-0 left-0 right-0 z-10">
-                <h1 class="text-2xl font-semibold">Loop</h1>
-                <button id="toolbox-btn" class="p-2 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
-                    <i data-lucide="more-vertical"></i>
-                </button>
-            </header>
-            <main class="flex-1 overflow-hidden relative">
-                <div class="video-container">
-                    <video id="main-video" class="w-full h-full object-cover" loop muted playsinline></video>
-                    <div class="video-overlay"></div>
-                </div>
-                <div class="like-emoji">❤️</div>
-                <div class="absolute bottom-20 left-4 right-12 z-10">
-                    <h2 id="video-author" class="text-2xl font-semibold mb-2"></h2>
-                    <p id="video-caption" class="text-lg"></p>
-                </div>
-                <div class="absolute right-4 bottom-32 flex flex-col items-center space-y-6">
-                    <button id="like-btn" class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
-                        <i data-lucide="heart"></i>
-                    </button>
-                    <span id="likes-count" class="text-sm"></span>
-                    <button class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
-                        <i data-lucide="message-circle"></i>
-                    </button>
-                    <span id="comments-count" class="text-sm"></span>
-                    <button class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
-                        <i data-lucide="share-2"></i>
-                    </button>
-                    <button class="p-3 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75 transition-all">
-                        <i data-lucide="bookmark"></i>
-                    </button>
-                </div>
-            </main>
-            <nav class="fixed bottom-0 left-0 right-0 bg-gray-900 p-4 flex justify-around items-center">
-                <button id="home-btn" class="text-white focus:outline-none">
-                    <i data-lucide="home"></i>
-                    <span class="block text-xs mt-1">Home</span>
-                </button>
-                <button id="upload-btn" class="text-white focus:outline-none">
-                    <i data-lucide="upload"></i>
-                    <span class="block text-xs mt-1">Upload</span>
-                </button>
-                <button id="inbox-btn" class="text-white focus:outline-none">
-                    <i data-lucide="inbox"></i>
-                    <span class="block text-xs mt-1">Inbox</span>
-                </button>
-            </nav>
-        </div>
-
-        <div id="toolbox-menu" class="toolbox-menu">
-            <button id="withdraw-btn"><i data-lucide="dollar-sign"></i> Withdraw</button>
-            <button id="deposit-btn"><i data-lucide="credit-card"></i> Deposit</button>
-            <button id="my-videos-btn"><i data-lucide="film"></i> My Videos</button>
-            <button id="logout-btn"><i data-lucide="log-out"></i> Log Out</button>
-        </div>
-
-        <div id="upload-modal" class="modal">
-            <div class="modal-content">
-                <h2 class="text-2xl font-bold mb-4 text-gray-800">Upload Video</h2>
-                <input type="file" id="video-upload" accept="video/*" class="mb-4">
-                <button id="upload-submit" class="bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
-            </div>
-        </div>
-
-        <div id="inbox-modal" class="modal">
-            <div class="modal-content">
-                <h2 class="text-2xl font-bold mb-4 text-gray-800">Inbox</h2>
-                <div id="inbox-messages" class="text-gray-800"></div>
-            </div>
-        </div>
+<div class="video-container">
+    <video id="videoPlayer" controls controlsList="nodownload noremoteplayback" autoplay muted>
+        <source src="your-video-file.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="controls">
+        <button onclick="likeVideo()"><i class="fas fa-heart"></i> Like</button>
     </div>
+    <div class="coin-text" id="coinText">2.175 AKEL Coins</div> <!-- Coin amount with yellow text -->
+</div>
 
-    <script>
-        const videos = [
-            {
-                id: 1,
-                url: 'https://assets.mixkit.co/videos/preview/mixkit-spinning-around-the-earth-29351-large.mp4',
-                caption: 'Exploring the beauty of our planet',
-                author: 'SpaceExplorer',
-                likes: 1234,
-                comments: 89,
-            },
-            {
-                id: 2,
-                url: 'https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4',
-                caption: 'Nature's vibrant colors',
-                author: 'NatureLover',
-                likes: 2345,
-                comments: 156,
-            },
-            {
-                id: 3,
-                url: 'https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4',
-                caption: 'Soothing waves and tranquil waters',
-                author: 'OceanDreamer',
-                likes: 3456,
-                comments: 201,
-            },
-        ];
+<footer>
+    <button onclick="goHome()">HOME</button>
+    <button onclick="goToProfile()">PROFILE</button>
+    <button onclick="myVideos()">MY VIDS</button>
+</footer>
 
-        let currentVideoIndex = 0;
-        let isLiked = false;
-        let videoTimer;
-        let userBalance = 1000; // Initial balance in cents
+<!-- Profile Interface -->
+<div id="profile" class="modal" style="display:none;">
+   <div class="modal-content">
+      <h2>User Profile</h2>
+      <img src="profile-pic.jpg" alt="Profile Picture" style="width:100px;border-radius:50%;">
+      <p><strong>Username:</strong> <span id="username">JohnDoe</span></p>
+      <p><strong>Email:</strong> <span id="email">johndoe@example.com</span></p>
+      <p><strong>Bio:</strong> <span id="bio">This is a sample bio.</span></p>
+      <button onclick="closeProfile()">Close</button>
+   </div>
+</div>
 
-        const mainVideo = document.getElementById('main-video');
-        const likeEmoji = document.querySelector('.like-emoji');
-        const likeBtn = document.getElementById('like-btn');
-        const toolboxMenu = document.getElementById('toolbox-menu');
-        const uploadModal = document.getElementById('upload-modal');
-        const inboxModal = document.getElementById('inbox-modal');
+<!-- My Videos Interface -->
+<div id="myVideos" class="modal" style="display:none;">
+   <div class="modal-content">
+      <h2>My Videos</h2>
+      <div class="video-grid">
+         <!-- Example video entries -->
+         <div class="video-item">
+             <video controls width="200">
+                 <source src="my-video1.mp4" type="video/mp4">
+                 Your browser does not support the video tag.
+             </video>
+             <p>My Video 1</p>
+         </div>
+         <div class="video-item">
+             <video controls width="200">
+                 <source src="my-video2.mp4" type="video/mp4">
+                 Your browser does not support the video tag.
+             </video>
+             <p>My Video 2</p>
+         </div>
+         <!-- Add more video items dynamically -->
+      </div>
+      <button onclick="closeMyVideos()">Close</button>
+   </div>
+</div>
 
-        function loadVideo(index) {
-            const video = videos[index];
-            mainVideo.src = video.url;
-            document.getElementById('video-author').textContent = video.author;
-            document.getElementById('video-caption').textContent = video.caption;
-            document.getElementById('likes-count').textContent = video.likes;
-            document.getElementById('comments-count').textContent = video.comments;
-            isLiked = false;
-            likeBtn.querySelector('i').setAttribute('fill', 'none');
-            mainVideo.currentTime = 0;
-            mainVideo.play();
-            startVideoTimer();
-        }
+<script>
+// Variables to track visibility of modals
+let akelCoins = parseInt(document.getElementById('akelCoins').innerText);
 
-        function startVideoTimer() {
-            clearTimeout(videoTimer);
-            videoTimer = setTimeout(() => {
-                mainVideo.pause();
-                showLikeEmoji();
-            }, 5000);
-        }
+function likeVideo() {
+    if (akelCoins > 0) {
+       akelCoins -= 0.025; // Deduct AKEL coins
+       document.getElementById('akelCoins').innerText = akelCoins.toFixed(3);
+       
+       // Update coin text for the video
+       let currentCoins = parseFloat(document.getElementById('coinText').innerText) + 0.025; // Add to content creator
+       document.getElementById('coinText').innerText = currentCoins.toFixed(3) + " AKEL Coins";
+   } else {
+       alert("Insufficient AKEL coins!");
+   }
+}
 
-        function showLikeEmoji() {
-            likeEmoji.classList.add('show');
-            setTimeout(() => {
-                likeEmoji.classList.remove('show');
-                if (!isLiked) {
-                    loadVideo((currentVideoIndex + 1) % videos.length);
-                }
-            }, 5000);
-        }
+function goHome() {
+   loadNewVideos(); // Call function to load new videos
+}
 
-        function handleLike() {
-            isLiked = true;
-            likeBtn.querySelector('i').setAttribute('fill', 'currentColor');
-            likeEmoji.classList.remove('show');
-            mainVideo.play();
-            clearTimeout(videoTimer);
-            // Increment likes
-            const likesCount = document.getElementById('likes-count');
-            likesCount.textContent = parseInt(likesCount.textContent) + 1;
-        }
+function loadNewVideos() {
+   // Logic to fetch and display new videos that haven't been viewed by the user
+   const newVideos = [
+       { src: 'new-video1.mp4', title: 'New Video 1' },
+       { src: 'new-video2.mp4', title: 'New Video 2' },
+   ];
 
-        function toggleToolbox() {
-            toolboxMenu.style.display = toolboxMenu.style.display === 'block' ? 'none' : 'block';
-        }
+   if (newVideos.length > 0) {
+       const videoPlayer = document.getElementById('videoPlayer');
+       videoPlayer.src = newVideos[0].src; // Load the first new video
+       videoPlayer.play(); // Play the new video
+   } else {
+       alert("No new videos available.");
+   }
+}
 
-        function showUploadModal() {
-            uploadModal.style.display = 'block';
-        }
+function goToProfile() {
+   document.getElementById('profile').style.display = 'block';
+}
 
-        function showInboxModal() {
-            inboxModal.style.display = 'block';
-            // Simulated inbox messages
-            document.getElementById('inbox-messages').innerHTML = `
-                <p class="mb-2">Message 1: New comment on your video</p>
-                <p class="mb-2">Message 2: You have a new follower</p>
-                <p>Message 3: Your video is trending!</p>
-            `;
-        }
+function closeProfile() {
+   document.getElementById('profile').style.display = 'none';
+}
 
-        function withdraw() {
-            const amount = prompt("Enter amount to withdraw (in cents):");
-            if (amount && !isNaN(amount)) {
-                if (userBalance >= parseInt(amount)) {
-                    userBalance -= parseInt(amount);
-                    alert(`Withdrawn ${amount} cents. New balance: ${userBalance} cents`);
-                } else {
-                    alert("Insufficient funds");
-                }
-            }
-        }
+function myVideos() {
+   document.getElementById('myVideos').style.display = 'block';
+}
 
-        function deposit() {
-            const amount = prompt("Enter amount to deposit (in cents):");
-            if (amount && !isNaN(amount)) {
-                userBalance += parseInt(amount);
-                alert(`Deposited ${amount} cents. New balance: ${userBalance} cents`);
-            }
-        }
+function closeMyVideos() {
+   document.getElementById('myVideos').style.display = 'none';
+}
 
-        function showMyVideos() {
-            alert("My Videos feature coming soon!");
-        }
+// Close modals when clicking outside of them
+window.onclick = function(event) {
+    const profileModal = document.getElementById('profile');
+    const myVideosModal = document.getElementById('myVideos');
 
-        function logout() {
-            document.getElementById('app-content').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-        }
+    if (event.target === profileModal) {
+        closeProfile();
+    } else if (event.target === myVideosModal) {
+        closeMyVideos();
+    }
+};
+</script>
 
-        // Event Listeners
-        likeBtn.addEventListener('click', handleLike);
-        document.getElementById('toolbox-btn').addEventListener('click', toggleToolbox);
-        document.getElementById('upload-btn').addEventListener('click', showUploadModal);
-        document.getElementById('inbox-btn').addEventListener('click', showInboxModal);
-        document.getElementById('withdraw-btn').addEventListener('click', withdraw);
-        document.getElementById('deposit-btn').addEventListener('click', deposit);
-        document.getElementById('my-videos-btn').addEventListener('click', showMyVideos);
-        document.getElementById('logout-btn').addEventListener('click', logout);
-
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            if (username && password)  {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-content').classList.remove('hidden');
-                loadVideo(currentVideoIndex);
-            } else {
-                alert('Please enter both username and password');
-            }
-        });
-
-        // Close modals when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-            }
-        });
-
-        mainVideo.addEventListener('ended', () => {
-            if (isLiked) {
-                mainVideo.currentTime = 0;
-                mainVideo.play();
-            } else {
-                loadVideo((currentVideoIndex + 1) % videos.length);
-            }
-        });
-
-        // Initialize
-        lucide.createIcons();
-    </script>
 </body>
 </html>
